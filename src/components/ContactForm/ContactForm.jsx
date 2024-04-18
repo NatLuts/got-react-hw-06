@@ -2,8 +2,16 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { nanoid } from "nanoid";
 import s from "../Phonebook.module.css";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { addNewContact } from "../../redux/contactsSlice";
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const handleSubmit = (data, actions) => {
+    dispatch(addNewContact({ ...data, id: nanoid() }));
+    actions.resetForm();
+  };
+
   const addSchema = Yup.object().shape({
     name: Yup.string()
       .min(3, "Field must be more than 3")
@@ -18,11 +26,6 @@ const ContactForm = ({ addContact }) => {
   const intialValues = {
     name: "",
     number: "",
-  };
-
-  const handleSubmit = (data, options) => {
-    addContact({ ...data, id: nanoid() });
-    options.resetForm();
   };
 
   return (
